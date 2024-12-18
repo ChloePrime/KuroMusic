@@ -3,7 +3,6 @@ package cn.chloeprime.kuromusic.common.network;
 import cn.chloeprime.kuromusic.client.ClientNetworkHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent;
 
 public class ClientboundPlayMusicPacket implements Packet {

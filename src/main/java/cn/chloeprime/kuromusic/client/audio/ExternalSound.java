@@ -1,7 +1,6 @@
 package cn.chloeprime.kuromusic.client.audio;
 
 import cn.chloeprime.kuromusic.KuroMusic;
-import cn.chloeprime.kuromusic.platform.MusicUrlContext;
 import cn.chloeprime.kuromusic.platform.MusicUrlTransformResult;
 import cn.chloeprime.kuromusic.platform.MusicUrlTransformer;
 import cn.chloeprime.kuromusic.util.BuggySupplier;
