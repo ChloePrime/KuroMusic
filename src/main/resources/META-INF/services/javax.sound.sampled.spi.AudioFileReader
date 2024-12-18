@@ -1,0 +1,3 @@
+# Fix service bug in development environment
+cn.chloeprime.kuromusic.client.audio.spi.MpegAudioFileReader
+cn.chloeprime.kuromusic.client.audio.spi.VorbisAudioFileReader

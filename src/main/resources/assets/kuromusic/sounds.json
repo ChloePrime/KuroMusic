@@ -1,0 +1,12 @@
+{
+  "music": {
+    "category": "music",
+    "subtitle": "subtitle.kuromusic.music",
+    "sounds": [
+      {
+        "name": "random/orb",
+        "stream": true
+      }
+    ]
+  }
+}

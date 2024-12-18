@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "cn.chloeprime.kuromusic.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "kuromusic.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "client.MixinMusicManager"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
