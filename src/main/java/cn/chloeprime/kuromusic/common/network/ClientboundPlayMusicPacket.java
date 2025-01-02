@@ -31,6 +31,7 @@ public class ClientboundPlayMusicPacket implements Packet {
         this.seed = pSeed;
     }
 
+    @Override
     public void encode(FriendlyByteBuf buf) {
         buf.writeUtf(url);
         buf.writeEnum(source);
@@ -75,6 +76,7 @@ public class ClientboundPlayMusicPacket implements Packet {
         this.seed = buf.readLong();
     }
 
+    @Override
     public void handle(NetworkEvent.Context context) {
         ClientNetworkHandler.handlePlayMusicPacket(this);
     }

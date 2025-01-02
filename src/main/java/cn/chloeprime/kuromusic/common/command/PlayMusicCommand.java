@@ -31,18 +31,18 @@ import java.util.Collection;
 
 public class PlayMusicCommand {
     private static final SimpleCommandExceptionType ERROR_TOO_FAR = new SimpleCommandExceptionType(Component.translatable("commands.playsound.failed"));
-    private static final String[] URL_EXAMPLES = {
+    public static final String[] URL_EXAMPLES = {
             "\"https://www.example.com/foo.mp3\"",
             "\"C:\\Users\\Administrator\\Music\\Your Favourite Music.ogg\"",
     };
 
-    public static final SuggestionProvider<CommandSourceStack> EXAMPLE_URLS = SuggestionProviders.register(
+    public static final SuggestionProvider<CommandSourceStack> URL_EXAMPLE_SUGGESTIONS = SuggestionProviders.register(
             KuroMusic.loc("example_urls"),
             (context, builder) -> SharedSuggestionProvider.suggest(URL_EXAMPLES, builder)
     );
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
-        var head = Commands.argument("url", StringArgumentType.string()).suggests(EXAMPLE_URLS);
+        var head = Commands.argument("url", StringArgumentType.string()).suggests(URL_EXAMPLE_SUGGESTIONS);
 
         for(SoundSource soundsource : SoundSource.values()) {
             head.then(source(soundsource));

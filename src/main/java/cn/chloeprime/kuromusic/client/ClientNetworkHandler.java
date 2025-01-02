@@ -1,9 +1,13 @@
 package cn.chloeprime.kuromusic.client;
 
+import cn.chloeprime.kuromusic.client.audio.BackgroundMusicManager;
 import cn.chloeprime.kuromusic.client.audio.ExternalSound;
 import cn.chloeprime.kuromusic.client.audio.VanillaMusicOverrideTracker;
 import cn.chloeprime.kuromusic.common.ModSoundEvents;
+import cn.chloeprime.kuromusic.common.command.SetBackgroundMusicCommand;
 import cn.chloeprime.kuromusic.common.network.ClientboundPlayMusicPacket;
+import cn.chloeprime.kuromusic.common.network.ClientboundSetBackgroundMusicPacket;
+import cn.chloeprime.kuromusic.mixin.client.MusicManagerAccessor;
 import com.google.common.base.Suppliers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
@@ -42,5 +46,17 @@ public class ClientNetworkHandler {
                         : () -> {}
         );
         MC.getSoundManager().play(instance);
+    }
+
+    public static void handleSetBgmPacket(ClientboundSetBackgroundMusicPacket packet) {
+        var mc = Minecraft.getInstance();
+        if (SetBackgroundMusicCommand.DEV_NULL.equals(packet.url)) {
+            BackgroundMusicManager.clear();
+            return;
+        }
+        BackgroundMusicManager.set(packet.url).thenAcceptAsync(_void -> {
+            mc.getMusicManager().stopPlaying();
+            ((MusicManagerAccessor) mc.getMusicManager()).setNextSongDelay(0);
+        }, mc);
     }
 }

@@ -8,5 +8,15 @@
         "stream": true
       }
     ]
+  },
+  "background_music": {
+    "category": "music",
+    "subtitle": "subtitle.kuromusic.music.background",
+    "sounds": [
+      {
+        "name": "random/orb",
+        "stream": true
+      }
+    ]
   }
 }

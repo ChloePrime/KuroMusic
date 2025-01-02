@@ -19,6 +19,7 @@ public class ModNetwork {
     private static final AtomicInteger ID_COUNT = new AtomicInteger(1);
 
     public static void init() {
-        CHANNEL.registerMessage(ID_COUNT.getAndIncrement(), ClientboundPlayMusicPacket.class, ClientboundPlayMusicPacket::encode, ClientboundPlayMusicPacket::new, Packet::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(ID_COUNT.getAndIncrement(), ClientboundPlayMusicPacket.class, Packet::encode, ClientboundPlayMusicPacket::new, Packet::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
+        CHANNEL.registerMessage(ID_COUNT.getAndIncrement(), ClientboundSetBackgroundMusicPacket.class, Packet::encode, ClientboundSetBackgroundMusicPacket::new, Packet::handle, Optional.of(NetworkDirection.PLAY_TO_CLIENT));
     }
 }

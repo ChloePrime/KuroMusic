@@ -1,3 +1,6 @@
 {
-  "subtitle.kuromusic.music": "[Music]"
+  "subtitle.kuromusic.music": "[Music]",
+  "subtitle.kuromusic.music.background": "[Background Music]",
+  "kuromusic.commands.setbackgroundmusic.success.multiple": "Set background music to %s for %s players",
+  "kuromusic.commands.setbackgroundmusic.success.single": "Set background music to %s for %s"
 }

@@ -7,7 +7,9 @@
   "mixins": [
   ],
   "client": [
-    "client.MixinMusicManager"
+    "client.MixinMinecraft",
+    "client.MixinMusicManager",
+    "client.MusicManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

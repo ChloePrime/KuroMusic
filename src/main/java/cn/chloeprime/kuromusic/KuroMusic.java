@@ -2,6 +2,7 @@ package cn.chloeprime.kuromusic;
 
 import cn.chloeprime.kuromusic.common.ModSoundEvents;
 import cn.chloeprime.kuromusic.common.command.PlayMusicCommand;
+import cn.chloeprime.kuromusic.common.command.SetBackgroundMusicCommand;
 import cn.chloeprime.kuromusic.common.network.ModNetwork;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
@@ -36,5 +37,6 @@ public class KuroMusic {
 
     private static void registerCommands(RegisterCommandsEvent event) {
         PlayMusicCommand.register(event.getDispatcher());
+        SetBackgroundMusicCommand.register(event.getDispatcher());
     }
 }

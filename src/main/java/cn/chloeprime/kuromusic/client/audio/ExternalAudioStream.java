@@ -38,9 +38,8 @@ public class ExternalAudioStream implements AudioStream {
         this(originalStream, Objects.requireNonNull(pos), onFinished, 0);
     }
 
-    private ExternalAudioStream(AudioInputStream originalStream, @Nullable Vec3 pos, Runnable onFinishedHook, int ignoredNonsense) {
-        this.onFinishedHook = onFinishedHook;
-        var oldFormat = originalStream.getFormat();
+    public static AudioInputStream convert(AudioInputStream input, boolean spatial) {
+        var oldFormat = input.getFormat();
         var sampleRate = oldFormat.getSampleRate();
         int newFormatBits = 16;
         var newFormatChannels = oldFormat.getChannels();
@@ -48,16 +47,21 @@ public class ExternalAudioStream implements AudioStream {
                 AudioFormat.Encoding.PCM_SIGNED,
                 sampleRate, newFormatBits, newFormatChannels, 2 * newFormatChannels,
                 sampleRate, false);
-        var stereoPcmStream = AudioSystem.getAudioInputStream(newFormat, originalStream);
-        if (pos == null) {
-            this.stream = stereoPcmStream;
+        var stereoPcmStream = AudioSystem.getAudioInputStream(newFormat, input);
+        if (!spatial) {
+            return stereoPcmStream;
         } else {
             var monoFormat = new AudioFormat(
                     AudioFormat.Encoding.PCM_SIGNED,
                     sampleRate, newFormatBits, 1, 2,
                     sampleRate, false);
-            this.stream = AudioSystem.getAudioInputStream(monoFormat, stereoPcmStream);
+            return AudioSystem.getAudioInputStream(monoFormat, stereoPcmStream);
         }
+    }
+
+    private ExternalAudioStream(AudioInputStream originalStream, @Nullable Vec3 pos, Runnable onFinishedHook, int ignoredNonsense) {
+        this.onFinishedHook = onFinishedHook;
+        this.stream = convert(originalStream, pos != null);
         this.frameSize = stream.getFormat().getFrameSize();
         this.frame = new byte[frameSize];
     }
