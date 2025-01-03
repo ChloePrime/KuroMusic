@@ -5,7 +5,6 @@ import cn.chloeprime.kuromusic.platform.MusicUrlTransformResult;
 import cn.chloeprime.kuromusic.platform.MusicUrlTransformer;
 import cn.chloeprime.kuromusic.util.BuggySupplier;
 import cn.chloeprime.kuromusic.util.RequestUtil;
-import com.google.common.util.concurrent.Runnables;
 import net.minecraft.Util;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.Sound;
@@ -56,9 +55,8 @@ public class ExternalSound extends SimpleSoundInstance {
         this.onFinishHook = onFinishHook;
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static ExternalSound forExternalMusic(InputStream data, SoundEvent event) {
-        return new ExternalSound(data, event.getLocation(), SoundSource.MUSIC, 1.0F, 1.0F, SoundInstance.createUnseededRandom(), false, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true, Runnables.doNothing());
+    public static ExternalSound forExternalMusic(InputStream data, SoundEvent event, Runnable callback) {
+        return new ExternalSound(data, event.getLocation(), SoundSource.MUSIC, 1.0F, 1.0F, SoundInstance.createUnseededRandom(), false, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true, callback);
     }
 
     @Nullable

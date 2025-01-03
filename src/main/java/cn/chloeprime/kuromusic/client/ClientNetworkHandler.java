@@ -54,7 +54,7 @@ public class ClientNetworkHandler {
             BackgroundMusicManager.clear();
             return;
         }
-        BackgroundMusicManager.set(packet.url).thenAcceptAsync(_void -> {
+        BackgroundMusicManager.set(packet.priority, packet.url).thenAcceptAsync(_void -> {
             mc.getMusicManager().stopPlaying();
             ((MusicManagerAccessor) mc.getMusicManager()).setNextSongDelay(0);
         }, mc);

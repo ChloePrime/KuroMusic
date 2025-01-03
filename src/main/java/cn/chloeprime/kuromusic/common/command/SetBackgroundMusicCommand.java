@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.stream.Stream;
 
 public class SetBackgroundMusicCommand {
+    public static final long COMMAND_MUSIC_PRIORITY = Integer.MAX_VALUE;
     public static final String DEV_NULL = "/dev/null";
     public static final String[] URL_EXAMPLES = Stream.concat(
             Arrays.stream(PlayMusicCommand.URL_EXAMPLES),
@@ -50,7 +51,7 @@ public class SetBackgroundMusicCommand {
         for (var player : targets) {
             ModNetwork.CHANNEL.send(
                     PacketDistributor.PLAYER.with(() -> player),
-                    new ClientboundSetBackgroundMusicPacket(url, volume, pitch)
+                    new ClientboundSetBackgroundMusicPacket(url, COMMAND_MUSIC_PRIORITY, volume, pitch)
             );
             ++count;
         }

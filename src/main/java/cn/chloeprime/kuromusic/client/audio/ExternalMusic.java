@@ -9,23 +9,25 @@ import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 public class ExternalMusic extends Music {
-    public ExternalMusic(Holder<SoundEvent> event, byte[] data) {
-        this(event, data, 0, getLengthSeconds(data) > 0);
+    public ExternalMusic(Holder<SoundEvent> event, byte[] data, Runnable onStop) {
+        this(event, data, 0, getLengthSeconds(data) > 0, onStop);
     }
 
     public SimpleSoundInstance createInstance() {
         return isValid
-                ? ExternalSound.forExternalMusic(new ByteArrayInputStream(data), getEvent().value())
+                ? ExternalSound.forExternalMusic(new ByteArrayInputStream(data), getEvent().value(), onStopCallback)
                 : SimpleSoundInstance.forMusic(getEvent().value());
     }
 
     private final byte[] data;
     private final boolean isValid;
+    private final Runnable onStopCallback;
 
-    private ExternalMusic(Holder<SoundEvent> event, byte[] data, int delay, boolean valid) {
+    private ExternalMusic(Holder<SoundEvent> event, byte[] data, int delay, boolean valid, Runnable onStop) {
         super(event, delay, delay, valid);
         this.isValid = valid;
         this.data = valid ? Objects.requireNonNull(data) : null;
+        this.onStopCallback = onStop;
     }
 
     public static double getLengthSeconds(byte[] data) {

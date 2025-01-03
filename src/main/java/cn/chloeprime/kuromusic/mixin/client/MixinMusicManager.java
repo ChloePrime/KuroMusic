@@ -13,17 +13,28 @@ import net.minecraft.sounds.SoundEvent;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
+import java.lang.ref.WeakReference;
 
 @Mixin(MusicManager.class)
 public abstract class MixinMusicManager {
     @Shadow @Nullable private SoundInstance currentMusic;
     @Shadow @Final private Minecraft minecraft;
     @Shadow private int nextSongDelay;
+
+    private static final @Unique WeakReference<ExternalMusic> kuromusic$NULL_REF = new WeakReference<>(null);
+    private @Unique WeakReference<ExternalMusic> kuromusic$currentExternalMusic = kuromusic$NULL_REF;
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void fixDelayOverflowProblem(CallbackInfo ci) {
+        nextSongDelay = Math.max(0, nextSongDelay);
+    }
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void silenceWhenNeeded(CallbackInfo ci) {
@@ -46,5 +57,27 @@ public abstract class MixinMusicManager {
         } else {
             return original.call(sound);
         }
+    }
+
+    @Inject(method = "startPlaying", at = @At("HEAD"))
+    private void recordCurrentExternalMusic(Music music, CallbackInfo ci) {
+        if (music instanceof ExternalMusic externalMusic) {
+            kuromusic$currentExternalMusic = new WeakReference<>(externalMusic);
+        }
+    }
+
+    @Inject(method = "isPlayingMusic", at = @At("HEAD"), cancellable = true)
+    private void compareExternalMusicByRef(Music music, CallbackInfoReturnable<Boolean> cir) {
+        if (currentMusic == null) {
+            return;
+        }
+        if (music instanceof ExternalMusic externalMusic) {
+            cir.setReturnValue(externalMusic == kuromusic$currentExternalMusic.get());
+        }
+    }
+
+    @Inject(method = "stopPlaying()V", at = @At("RETURN"))
+    private void removeRecordedCurrentExternalMusic(CallbackInfo ci) {
+        kuromusic$currentExternalMusic = kuromusic$NULL_REF;
     }
 }
