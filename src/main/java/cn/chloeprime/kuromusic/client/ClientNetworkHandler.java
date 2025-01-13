@@ -51,12 +51,16 @@ public class ClientNetworkHandler {
     public static void handleSetBgmPacket(ClientboundSetBackgroundMusicPacket packet) {
         var mc = Minecraft.getInstance();
         if (SetBackgroundMusicCommand.DEV_NULL.equals(packet.url)) {
-            BackgroundMusicManager.clear();
+            BackgroundMusicManager.clear(packet.priority);
             return;
         }
         BackgroundMusicManager.set(packet.priority, packet.url).thenAcceptAsync(_void -> {
             mc.getMusicManager().stopPlaying();
             ((MusicManagerAccessor) mc.getMusicManager()).setNextSongDelay(0);
         }, mc);
+    }
+
+    public static void handleStopSelfBackgroundMusic() {
+        BackgroundMusicManager.clear();
     }
 }

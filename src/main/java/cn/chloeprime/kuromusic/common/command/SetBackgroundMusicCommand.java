@@ -1,8 +1,10 @@
 package cn.chloeprime.kuromusic.common.command;
 
 import cn.chloeprime.kuromusic.KuroMusic;
+import cn.chloeprime.kuromusic.common.ModPermissions;
 import cn.chloeprime.kuromusic.common.network.ClientboundSetBackgroundMusicPacket;
 import cn.chloeprime.kuromusic.common.network.ModNetwork;
+import cn.chloeprime.kuroutils.PermissionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -34,7 +36,7 @@ public class SetBackgroundMusicCommand {
     );
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        var command = Commands.literal("setbackgroundmusic")
+        var command = Commands.literal("setbackgroundmusic").requires(PermissionUtils.checker(ModPermissions.SET_BGM))
                 .then(Commands.argument("url", StringArgumentType.string()).suggests(URL_EXAMPLE_SUGGESTIONS)
                         .then(Commands.argument("targets", EntityArgument.players()).executes(
                                         context -> playMusic(context.getSource(), EntityArgument.getPlayers(context, "targets"), StringArgumentType.getString(context, "url"), 1, 1))
