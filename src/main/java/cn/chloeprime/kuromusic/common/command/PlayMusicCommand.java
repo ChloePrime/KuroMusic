@@ -4,7 +4,6 @@ import cn.chloeprime.kuromusic.KuroMusic;
 import cn.chloeprime.kuromusic.common.ModPermissions;
 import cn.chloeprime.kuromusic.common.ModSoundEvents;
 import cn.chloeprime.kuromusic.common.network.ClientboundPlayMusicPacket;
-import cn.chloeprime.kuromusic.common.network.ModNetwork;
 import cn.chloeprime.kuroutils.PermissionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -24,7 +23,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -57,7 +56,7 @@ public class PlayMusicCommand {
         return Commands.literal(category.getName()).then(Commands.argument("targets", EntityArgument.players()).executes((context) -> {
             return playMusic(context.getSource(), EntityArgument.getPlayers(context, "targets"), StringArgumentType.getString(context, "url"), category, null, 0, 1, 1, 0);
         }).then(Commands.argument("pos", Vec3Argument.vec3()).executes((context) -> {
-            return playMusic(context.getSource(), EntityArgument.getPlayers(context, "targets"), StringArgumentType.getString(context, "url"), category, Vec3Argument.getVec3(context, "pos"), ModSoundEvents.MUSIC.get().getRange(1), 1, 1, 0);
+            return playMusic(context.getSource(), EntityArgument.getPlayers(context, "targets"), StringArgumentType.getString(context, "url"), category, Vec3Argument.getVec3(context, "pos"), ModSoundEvents.MUSIC.value().getRange(1), 1, 1, 0);
         }).then(Commands.argument("range", FloatArgumentType.floatArg()).executes((context) -> {
             return playMusic(context.getSource(), EntityArgument.getPlayers(context, "targets"), StringArgumentType.getString(context, "url"), category, Vec3Argument.getVec3(context, "pos"), FloatArgumentType.getFloat(context, "range"), 1, 1, 0);
         }).then(Commands.argument("volume", FloatArgumentType.floatArg(0)).executes((context) -> {
@@ -83,11 +82,9 @@ public class PlayMusicCommand {
         var seed = source.getLevel().getRandom().nextLong();
 
         if (pos == null) {
+            var packet = new ClientboundPlayMusicPacket(url, category, false, 0, 0, 0, 0, volume, pitch, seed);
             for (var player : targets) {
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new ClientboundPlayMusicPacket(url, category, false, 0, 0, 0, 0, volume, pitch, seed)
-                );
+                PacketDistributor.sendToPlayer(player, packet);
                 ++count;
             }
         } else {
@@ -108,10 +105,7 @@ public class PlayMusicCommand {
                     realVolume = pMinVolume;
                 }
 
-                ModNetwork.CHANNEL.send(
-                        PacketDistributor.PLAYER.with(() -> player),
-                        new ClientboundPlayMusicPacket(url, category, true, vec3.x(), vec3.y(), vec3.z(), range, realVolume, pitch, seed)
-                );
+                PacketDistributor.sendToPlayer(player, new ClientboundPlayMusicPacket(url, category, true, vec3.x(), vec3.y(), vec3.z(), range, realVolume, pitch, seed));
                 ++count;
             }
         }

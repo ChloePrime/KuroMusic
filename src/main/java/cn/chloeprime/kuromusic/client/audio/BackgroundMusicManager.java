@@ -41,7 +41,7 @@ public class BackgroundMusicManager {
                 .supplyAsync(factory::getSilently, Util.backgroundExecutor())
                 .thenApply(input -> BuggySupplier.getSilently(input::readAllBytes))
                 .thenApply(data -> {
-                    var se = ModSoundEvents.BACKGROUND_MUSIC.getHolder().orElseThrow();
+                    var se = ModSoundEvents.BACKGROUND_MUSIC;
                     var ref = new Music[1];
                     return ref[0] = new ExternalMusic(se, data, () -> stopPlaying(ref[0]));
                 })
@@ -72,7 +72,7 @@ public class BackgroundMusicManager {
 
     public static void stopPlaying(Music music) {
         MC.getMusicManager().stopPlaying(music);
-        ((MusicManagerAccessor) MC.getMusicManager()).setNextSongDelay(0);
+        ((MusicManagerAccessor) MC.getMusicManager()).setNextSongDelay(5);
     }
 
     private static final ConcurrentMap<Long, AtomicBoolean> CANCELLER_TABLE = new ConcurrentHashMap<>();

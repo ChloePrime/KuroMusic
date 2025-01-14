@@ -14,11 +14,12 @@ import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 
+import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ClientNetworkHandler {
     public static final Minecraft MC = Minecraft.getInstance();
-    public static final Supplier<ResourceLocation> MUSIC_EVENT_ID = Suppliers.memoize(ModSoundEvents.MUSIC::getId);
+    public static final Supplier<ResourceLocation> MUSIC_EVENT_ID = Suppliers.memoize(() -> Objects.requireNonNull(ModSoundEvents.MUSIC.getKey()).location());
 
     public static void handlePlayMusicPacket(ClientboundPlayMusicPacket packet) {
         MC.getSoundManager().stop(MUSIC_EVENT_ID.get(), packet.source);

@@ -1,9 +1,9 @@
 package cn.chloeprime.kuromusic.common.network;
 
 import cn.chloeprime.kuromusic.client.ClientNetworkHandler;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundSource;
-import net.minecraftforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientboundPlayMusicPacket implements Packet {
     public static final float LOCATION_ACCURACY = 8.0F;
@@ -32,7 +32,7 @@ public class ClientboundPlayMusicPacket implements Packet {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeUtf(url);
         buf.writeEnum(source);
 
@@ -61,7 +61,7 @@ public class ClientboundPlayMusicPacket implements Packet {
         return packedZ / (double) LOCATION_ACCURACY;
     }
 
-    public ClientboundPlayMusicPacket(FriendlyByteBuf buf) {
+    public ClientboundPlayMusicPacket(RegistryFriendlyByteBuf buf) {
         this.url = buf.readUtf();
         this.source = buf.readEnum(SoundSource.class);
 
@@ -77,7 +77,7 @@ public class ClientboundPlayMusicPacket implements Packet {
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
+    public void handle(IPayloadContext context) {
         ClientNetworkHandler.handlePlayMusicPacket(this);
     }
 }

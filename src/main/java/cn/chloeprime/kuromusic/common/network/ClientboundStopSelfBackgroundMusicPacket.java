@@ -2,7 +2,8 @@ package cn.chloeprime.kuromusic.common.network;
 
 import cn.chloeprime.kuromusic.client.ClientNetworkHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientboundStopSelfBackgroundMusicPacket implements Packet {
     public ClientboundStopSelfBackgroundMusicPacket() {
@@ -12,11 +13,11 @@ public class ClientboundStopSelfBackgroundMusicPacket implements Packet {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
+    public void handle(IPayloadContext context) {
         ClientNetworkHandler.handleStopSelfBackgroundMusic();
     }
 }

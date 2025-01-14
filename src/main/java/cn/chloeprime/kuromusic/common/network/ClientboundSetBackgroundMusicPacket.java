@@ -2,7 +2,8 @@ package cn.chloeprime.kuromusic.common.network;
 
 import cn.chloeprime.kuromusic.client.ClientNetworkHandler;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.network.NetworkEvent;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ClientboundSetBackgroundMusicPacket implements Packet {
     public final String url;
@@ -18,7 +19,7 @@ public class ClientboundSetBackgroundMusicPacket implements Packet {
     }
 
     @Override
-    public void encode(FriendlyByteBuf buf) {
+    public void encode(RegistryFriendlyByteBuf buf) {
         buf.writeUtf(url);
         buf.writeVarLong(priority);
         buf.writeFloat(volume);
@@ -33,7 +34,7 @@ public class ClientboundSetBackgroundMusicPacket implements Packet {
     }
 
     @Override
-    public void handle(NetworkEvent.Context context) {
+    public void handle(IPayloadContext context) {
         ClientNetworkHandler.handleSetBgmPacket(this);
     }
 }

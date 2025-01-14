@@ -4,16 +4,17 @@ import cn.chloeprime.kuromusic.common.ModSoundEvents;
 import cn.chloeprime.kuromusic.common.command.PlayMusicCommand;
 import cn.chloeprime.kuromusic.common.command.SetBackgroundMusicCommand;
 import cn.chloeprime.kuromusic.common.command.StopSelfBackgroundMusicCommand;
-import cn.chloeprime.kuromusic.common.network.ModNetwork;
 import com.mojang.logging.LogUtils;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
+
+import java.util.Objects;
 
 @Mod(KuroMusic.MODID)
 public class KuroMusic {
@@ -21,19 +22,18 @@ public class KuroMusic {
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public static ResourceLocation loc(String path) {
-        return new ResourceLocation(MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
     public KuroMusic() {
-        var bus = FMLJavaModLoadingContext.get().getModEventBus();
+        var bus = Objects.requireNonNull(ModLoadingContext.get().getActiveContainer().getEventBus());
         ModSoundEvents.init(bus);
         bus.register(this);
     }
 
     @SubscribeEvent
     public void onCommonSetup(FMLCommonSetupEvent event) {
-        event.enqueueWork(ModNetwork::init);
-        event.enqueueWork(() -> MinecraftForge.EVENT_BUS.addListener(KuroMusic::registerCommands));
+        event.enqueueWork(() -> NeoForge.EVENT_BUS.addListener(KuroMusic::registerCommands));
     }
 
     private static void registerCommands(RegisterCommandsEvent event) {

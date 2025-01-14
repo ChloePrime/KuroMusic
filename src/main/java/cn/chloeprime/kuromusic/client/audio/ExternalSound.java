@@ -26,10 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.net.*;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
@@ -56,7 +53,7 @@ public class ExternalSound extends SimpleSoundInstance {
     }
 
     public static ExternalSound forExternalMusic(InputStream data, SoundEvent event, Runnable callback) {
-        return new ExternalSound(data, event.getLocation(), SoundSource.MUSIC, 1.0F, 1.0F, SoundInstance.createUnseededRandom(), false, 0, SoundInstance.Attenuation.NONE, 0.0D, 0.0D, 0.0D, true, callback);
+        return new ExternalSound(data, event.getLocation(), SoundSource.MUSIC, 1.0F, 1.0F, SoundInstance.createUnseededRandom(), false, 0, Attenuation.NONE, 0.0D, 0.0D, 0.0D, true, callback);
     }
 
     @Nullable
@@ -65,7 +62,7 @@ public class ExternalSound extends SimpleSoundInstance {
         var xRealIp = context.useRealIpInHeader();
         // URL
         try {
-            var url = new URL(input);
+            var url = new URI(input).toURL();
             if (url.getProtocol().equals("file")) {
                 var asFile = new File(url.toURI());
                 if (asFile.isFile()) {
@@ -100,7 +97,7 @@ public class ExternalSound extends SimpleSoundInstance {
         return null;
     }
 
-    public static URL resolveHttpRedirects(URL url, boolean xRealIp) throws IOException {
+    public static URL resolveHttpRedirects(URL url, boolean xRealIp) throws URISyntaxException, IOException {
         var maxRetries = 5;
         URL finalUrl = url;
         for (int i = 0; i < maxRetries; i++) {
@@ -109,7 +106,7 @@ public class ExternalSound extends SimpleSoundInstance {
                 if (conn instanceof HttpURLConnection httpConnection) {
                     var code = httpConnection.getResponseCode();
                     if (code == HttpURLConnection.HTTP_MOVED_TEMP || code == HttpURLConnection.HTTP_MOVED_PERM) {
-                        finalUrl = new URL(conn.getHeaderField("Location"));
+                        finalUrl = new URI(conn.getHeaderField("Location")).toURL();
                         continue;
                     }
                 }

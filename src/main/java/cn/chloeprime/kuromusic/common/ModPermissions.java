@@ -2,12 +2,12 @@ package cn.chloeprime.kuromusic.common;
 
 import cn.chloeprime.kuromusic.KuroMusic;
 import cn.chloeprime.kuroutils.PermissionUtils;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.server.permission.events.PermissionGatherEvent;
-import net.minecraftforge.server.permission.nodes.PermissionNode;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
+import net.neoforged.neoforge.server.permission.nodes.PermissionNode;
 
-@Mod.EventBusSubscriber
+@EventBusSubscriber
 public class ModPermissions {
     public static final PermissionNode<Boolean> PLAY_MUSIC = PermissionUtils.createSimple(KuroMusic.loc("music.play"));
     public static final PermissionNode<Boolean> SET_BGM = PermissionUtils.createSimple(KuroMusic.loc("background_music.set"));

@@ -3,7 +3,6 @@ package cn.chloeprime.kuromusic.common.command;
 import cn.chloeprime.kuromusic.KuroMusic;
 import cn.chloeprime.kuromusic.common.ModPermissions;
 import cn.chloeprime.kuromusic.common.network.ClientboundSetBackgroundMusicPacket;
-import cn.chloeprime.kuromusic.common.network.ModNetwork;
 import cn.chloeprime.kuroutils.PermissionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -16,7 +15,7 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.PacketDistributor;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,11 +49,9 @@ public class SetBackgroundMusicCommand {
 
     public static int playMusic(CommandSourceStack source, Collection<ServerPlayer> targets, String url, float volume, float pitch) {
         var count = 0;
+        var packet = new ClientboundSetBackgroundMusicPacket(url, COMMAND_MUSIC_PRIORITY, volume, pitch);
         for (var player : targets) {
-            ModNetwork.CHANNEL.send(
-                    PacketDistributor.PLAYER.with(() -> player),
-                    new ClientboundSetBackgroundMusicPacket(url, COMMAND_MUSIC_PRIORITY, volume, pitch)
-            );
+            PacketDistributor.sendToPlayer(player, packet);
             ++count;
         }
         if (targets.size() == 1) {
