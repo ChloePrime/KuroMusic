@@ -9,7 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.util.Objects;
 
 public class ExternalMusic extends Music {
-    public ExternalMusic(Holder<SoundEvent> event, byte[] data, Runnable onStop) {
+    public ExternalMusic(Holder<SoundEvent> event, byte[] data, @Deprecated Runnable onStop) {
         this(event, data, 0, getLengthSeconds(data) > 0, onStop);
     }
 

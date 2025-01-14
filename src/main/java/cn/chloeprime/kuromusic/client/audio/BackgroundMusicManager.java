@@ -42,8 +42,7 @@ public class BackgroundMusicManager {
                 .thenApply(input -> BuggySupplier.getSilently(input::readAllBytes))
                 .thenApply(data -> {
                     var se = ModSoundEvents.BACKGROUND_MUSIC.getHolder().orElseThrow();
-                    var ref = new Music[1];
-                    return ref[0] = new ExternalMusic(se, data, () -> stopPlaying(ref[0]));
+                    return new ExternalMusic(se, data, () -> {});
                 })
                 .thenAcceptAsync(music -> {
                     if (newCanceller.get()) {
