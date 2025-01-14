@@ -2,12 +2,14 @@ package cn.chloeprime.kuromusic.mixin.client;
 
 import cn.chloeprime.kuromusic.client.audio.ExternalMusic;
 import cn.chloeprime.kuromusic.client.audio.VanillaMusicOverrideTracker;
+import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.MusicManager;
+import net.minecraft.core.Holder;
 import net.minecraft.sounds.Music;
 import net.minecraft.sounds.SoundEvent;
 import org.spongepowered.asm.mixin.Final;
@@ -73,6 +75,30 @@ public abstract class MixinMusicManager {
         }
         if (music instanceof ExternalMusic externalMusic) {
             cir.setReturnValue(externalMusic == kuromusic$currentExternalMusic.get());
+        }
+    }
+
+    private @Unique Music kuromusic$capturedNewMusic;
+
+    @WrapOperation(
+            method = "tick",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/sounds/Music;getEvent()Lnet/minecraft/core/Holder;"))
+    private Holder<SoundEvent> mc121fix$captureMusicInstance(Music music, Operation<Holder<SoundEvent>> original) {
+        kuromusic$capturedNewMusic = music;
+        return original.call(music);
+    }
+
+    @ModifyExpressionValue(
+            method = "tick",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/resources/ResourceLocation;equals(Ljava/lang/Object;)Z"))
+    private boolean mc121fix$modifyExternalMusicEquality(boolean original) {
+        try {
+            if (kuromusic$capturedNewMusic instanceof ExternalMusic) {
+                return kuromusic$capturedNewMusic == kuromusic$currentExternalMusic.get();
+            }
+            return original;
+        } finally {
+            kuromusic$capturedNewMusic = null;
         }
     }
 
