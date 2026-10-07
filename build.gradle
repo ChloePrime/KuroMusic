@@ -14,19 +14,38 @@ plugins {
     id 'idea'
     id 'net.minecraftforge.gradle' version '[6.0.16,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+    id 'maven-publish'
 }
 
 apply plugin: 'org.spongepowered.mixin'
 
 group = mod_group_id
 version = mod_version
+def isRelease = !version.contains('alpha')
 
 base {
-    archivesName = mod_id
+    archivesName = "$mod_id-forge-$minecraft_version"
 }
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(17)
+    withSourcesJar()
+    withJavadocJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 17
+}
+
+tasks.withType(Javadoc).configureEach {
+    options.encoding = "UTF-8"
+    options.tags = [
+            "apiNote:a:API Note:",
+            "implSpec:a:Implementation Requirements:",
+            "implNote:a:Implementation Note:"
+    ]
+    failOnError = false
 }
 
 minecraft {
@@ -132,9 +151,13 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
-     flatDir {
-         dir 'libs'
-     }
+    maven {
+        name = "Chloe_Maven"
+        url = "https://maven.chloeprime.cn:4080/releases/"
+    }
+    flatDir {
+        dir 'libs'
+    }
 }
 
 dependencies {
@@ -145,9 +168,9 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    implementation jarJar(fg.deobf("cn.chloeprime:kuroutils:1.0.0+mc1.20.1")) {
+    implementation jarJar(fg.deobf("cn.chloeprime.kuroutils2:kuroutils2:2001.2.5.1")) {
         exclude group: '*', module: '*'
-        jarJar.ranged(it, "[1.0,)")
+        jarJar.ranged(it, "[2001.2.5.1,)")
     }
 
     def libs = [
@@ -214,8 +237,37 @@ tasks.named('jar', Jar).configure {
 jarJar.enable()
 tasks.named('jarJar') {
     archiveClassifier = ''
+    finalizedBy 'reobfJarJar'
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+tasks.withType(GenerateModuleMetadata).configureEach {
+    enabled = false
+}
+publishing {
+    repositories {
+        maven {
+            name = "Chloe_Maven"
+            url = isRelease
+                    ? "https://maven.chloeprime.cn:4080/releases/"
+                    : "https://maven.chloeprime.cn:4080/snapshots/"
+            credentials {
+                username "$CHLOE_MAVEN_USERNAME"
+                password "$CHLOE_MAVEN_PASSWORD"
+            }
+        }
+    }
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = group
+            artifactId = base.archivesName.get()
+            version = version
+            pom.withXml {
+                def node = asNode()
+                if(node.dependencies.size() > 0)
+                    node.remove(node.dependencies) // Remove deps, as they are all mappings-dependent and/or forge
+            }
+            from components.java
+            jarJar.component(it)
+        }
+    }
 }
