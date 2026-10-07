@@ -1,7 +1,7 @@
 package cn.chloeprime.kuromusic.common;
 
+import cn.chloeprime.commons.server.PermissionUtils;
 import cn.chloeprime.kuromusic.KuroMusic;
-import cn.chloeprime.kuroutils.PermissionUtils;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.server.permission.events.PermissionGatherEvent;

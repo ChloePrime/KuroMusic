@@ -1,11 +1,11 @@
 package cn.chloeprime.kuromusic.common.command;
 
+import cn.chloeprime.commons.server.PermissionUtils;
 import cn.chloeprime.kuromusic.KuroMusic;
 import cn.chloeprime.kuromusic.common.ModPermissions;
 import cn.chloeprime.kuromusic.common.ModSoundEvents;
 import cn.chloeprime.kuromusic.common.network.ClientboundPlayMusicPacket;
 import cn.chloeprime.kuromusic.common.network.ModNetwork;
-import cn.chloeprime.kuroutils.PermissionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
