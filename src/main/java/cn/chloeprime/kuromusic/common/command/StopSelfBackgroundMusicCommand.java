@@ -1,8 +1,8 @@
 package cn.chloeprime.kuromusic.common.command;
 
+import cn.chloeprime.commons.server.PermissionUtils;
 import cn.chloeprime.kuromusic.common.ModPermissions;
 import cn.chloeprime.kuromusic.common.network.ClientboundStopSelfBackgroundMusicPacket;
-import cn.chloeprime.kuroutils.PermissionUtils;
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;

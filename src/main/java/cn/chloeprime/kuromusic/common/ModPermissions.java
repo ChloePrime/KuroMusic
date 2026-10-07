@@ -1,7 +1,7 @@
 package cn.chloeprime.kuromusic.common;
 
+import cn.chloeprime.commons.server.PermissionUtils;
 import cn.chloeprime.kuromusic.KuroMusic;
-import cn.chloeprime.kuroutils.PermissionUtils;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.server.permission.events.PermissionGatherEvent;
